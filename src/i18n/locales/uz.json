@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "home": "Bosh Sahifa",
+    "about": "Biz Haqimizda",
+    "products": "Mahsulotlar",
+    "location": "Manzil",
+    "branches": "Filiallar",
+    "contact": "Bog'lanish"
+  },
+  "hero": {
+    "title": "GENTS_UZ",
+    "subtitle": "Premium erkaklar kiyimi do'koni — Sifatli, Zamonaviy, Klassik",
+    "viewCollection": "Kolleksiyani ko'rish",
+    "contactUs": "Bog'lanish"
+  },
+  "products": {
+    "title": "Premium Mahsulotlar",
+    "suits": {
+      "title": "Premium Kostyumlar",
+      "description": "Bizning kostyumlarimiz Italiya matolari asosida, mukammal tikuv va zamonaviy dizayn bilan yaratiladi. Har bir kostyum shaxsiy o'lchamlar bo'yicha tayyorlanishi mumkin."
+    },
+    "pants": {
+      "title": "Premium Shimlar",
+      "description": "Yuqori sifatli matolardan tayyorlangan, zamonaviy va klassik modellardagi shimlar. Har qanday uslubga mos keladigan, qulay va chidamli dizayn."
+    },
+    "shoes": {
+      "title": "Premium Oyoq Kiyimlar",
+      "description": "Tabiiy charm va yuqori sifatli materiallardan tayyorlangan klassik va zamonaviy oyoq kiyimlar. Har bir juftlik qulaylik va uzoq muddatli foydalanish uchun mo'ljallangan."
+    },
+    "sneakers": {
+      "title": "Premium Krossovkalar",
+      "description": "Zamonaviy dizayn va yuqori sifatli materiallar bilan tayyorlangan krossovkalar. Kundalik foydalanish uchun ideal va har qanday uslubga mos keladi."
+    }
+  },
+  "about": {
+    "title": "Biz Haqimizda",
+    "description": "GENTS_UZ — bu premium erkaklar kiyimi do'koni. Biz sifatli, zamonaviy va klassik kiyimlarni taklif etamiz. Bizning maqsadimiz — har bir mijozga eng yaxshi xizmat ko'rsatish va ularning uslubini oshirish.",
+    "quality": "Sifatli Materiallar",
+    "qualityDesc": "Italiya va Evropa matolaridan foydalanamiz",
+    "design": "Zamonaviy Dizayn",
+    "designDesc": "Eng so'nggi moda trendlarini kuzatamiz",
+    "service": "Professional Xizmat",
+    "serviceDesc": "Har bir mijozga individual yondashuv"
+  },
+  "branches": {
+    "title": "Filiallarimiz",
+    "branch1": {
+      "name": "1-Filial: Asosiy Do'kon",
+      "address": "5-qator, 240-do'kon, Toshkent",
+      "phone": "+998 95 888 88 87",
+      "description": "Eng keng assortiment, barcha turdagi premium mahsulotlar va shaxsiy konsultatsiya xizmatlari."
+    },
+    "branch2": {
+      "name": "2-Filial: ALFRAGANUS TPI",
+      "address": "Alfraganus ko'chasi, TPI savdo markazi, 2-qavat",
+      "phone": "+998 93 570 27 77",
+      "description": "Zamonaviy savdo markazidagi filialimiz. Tezkor xizmat va eng yangi modellar."
+    },
+    "googleMaps": "Google Maps",
+    "yandexMaps": "Yandex Maps"
+  },
+  "contact": {
+    "title": "Biz Bilan Bog'laning",
+    "subtitle": "Biz bilan quyidagi kanallar orqali aloqaga chiqishingiz mumkin",
+    "form": {
+      "title": "Savolingiz bormi?",
+      "name": "Ismingiz",
+      "phone": "Telefon raqamingiz",
+      "submit": "Yuborish",
+      "success": "Xabar yuborildi! Tez orada siz bilan bog'lanamiz.",
+      "error": "Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring."
+    },
+    "social": {
+      "telegram": "Telegram",
+      "instagram": "Instagram",
+      "tiktok": "TikTok"
+    }
+  },
+  "footer": {
+    "description": "Premium erkaklar kiyimi do'koni — Sifatli, Zamonaviy, Klassik",
+    "copyright": "© 2026 GENTS_UZ. Barcha huquqlar himoyalangan.",
+    "tagline": "Premium Men's Fashion"
+  },
+  "language": {
+    "uz": "UZ",
+    "ru": "RU"
+  }
+}
