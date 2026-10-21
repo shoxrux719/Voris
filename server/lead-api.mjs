@@ -33,6 +33,19 @@ function sendJson(res, status, payload) {
 }
 
 async function readJson(req) {
+  // Vercel can provide a parsed body after consuming the request stream.
+  if ('body' in req) {
+    let value;
+    try {
+      value = req.body;
+    } catch {
+      return { error: 'invalid_json' };
+    }
+    if (value !== undefined) {
+      if (Buffer.byteLength(JSON.stringify(value), 'utf8') > 8192) return { error: 'too_large' };
+      return { value };
+    }
+  }
   const chunks = [];
   let length = 0;
   let tooLarge = false;

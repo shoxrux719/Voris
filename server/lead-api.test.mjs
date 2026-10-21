@@ -53,6 +53,39 @@ test('invalid phone never reaches Telegram', async () => {
   });
 });
 
+test('a body parsed by Vercel works after the request stream is consumed', async () => {
+  let calls = 0;
+  const handler = createLeadHandler({
+    getConfig: () => ({ token: 'test-token', chatId: '123' }),
+    fetchImpl: async () => {
+      calls += 1;
+      return { ok: true, json: async () => ({ ok: true }) };
+    },
+  });
+  await withServer(async (req, res) => {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    req.body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    await handler(req, res);
+  }, async (url) => {
+    const response = await post(url, { firstName: 'Test', lastName: 'User', phone: '+998 90 123 45 67' });
+    assert.equal(response.status, 200);
+    assert.equal(calls, 1);
+  });
+});
+
+test('an oversized parsed body is rejected before Telegram delivery', async () => {
+  const handler = createLeadHandler({ getConfig: () => ({}) });
+  await withServer(async (req, res) => {
+    req.body = { firstName: 'A'.repeat(8192) };
+    await handler(req, res);
+  }, async (url) => {
+    const response = await post(url, {});
+    assert.equal(response.status, 413);
+    assert.equal((await response.json()).code, 'too_large');
+  });
+});
+
 test('missing Telegram configuration does not claim delivery', async () => {
   const handler = createLeadHandler({ getConfig: () => ({}) });
   await withServer(handler, async (url) => {
