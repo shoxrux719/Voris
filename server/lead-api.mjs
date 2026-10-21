@@ -142,6 +142,13 @@ export function createLeadHandler({ getConfig = telegramConfig, fetchImpl = fetc
         signal: AbortSignal.timeout(10000),
       });
       const result = await telegram.json();
+      const forbidden = result.error_code === 403 || (
+        result.error_code === 400 && /not enough rights|chat_write_forbidden|have no rights/iu.test(result.description || '')
+      );
+      if (!telegram.ok && forbidden) {
+        sendJson(res, 503, { ok: false, code: 'delivery_forbidden' });
+        return;
+      }
       if (!telegram.ok || result.ok !== true) throw new Error('telegram_rejected');
       sendJson(res, 200, { ok: true });
     } catch {

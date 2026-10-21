@@ -106,3 +106,20 @@ test('Telegram rejection is shown as a delivery failure', async () => {
     assert.equal((await response.json()).code, 'delivery_failed');
   });
 });
+
+test('Telegram write restrictions are reported as an unavailable form', async () => {
+  for (const rejection of [
+    { ok: false, error_code: 403 },
+    { ok: false, error_code: 400, description: 'Bad Request: not enough rights to send text messages to the chat' },
+  ]) {
+    const handler = createLeadHandler({
+      getConfig: () => ({ token: 'test-token', chatId: '123' }),
+      fetchImpl: async () => ({ ok: false, json: async () => rejection }),
+    });
+    await withServer(handler, async (url) => {
+      const response = await post(url, { firstName: 'Test', lastName: 'User', phone: '+998 90 123 45 67' });
+      assert.equal(response.status, 503);
+      assert.deepEqual(await response.json(), { ok: false, code: 'delivery_forbidden' });
+    });
+  }
+});

@@ -104,7 +104,8 @@ const content = {
     "formSending": "Yuborilmoqda...",
     "formSuccess": "Arizangiz yuborildi. Tez orada bog‘lanamiz.",
     "formError": "Ariza yuborilmadi. Iltimos, qayta urinib ko‘ring.",
-    "formUnavailable": "Ariza xizmati hozircha sozlanmagan. Telegram orqali bog‘laning.",
+    "formUnavailable": "Arizalar vaqtincha qabul qilinmayapti. Telegram orqali bog‘laning.",
+    "formTimeout": "Javob olishga ulgurmadik. Qayta yuborishdan oldin Telegram orqali bog‘laning.",
     "dockCases": "Tajriba",
     "dockResults": "Natijalar",
     "dockContact": "Aloqa",
@@ -170,7 +171,8 @@ const content = {
     "formSending": "Отправляем...",
     "formSuccess": "Заявка отправлена. Мы скоро свяжемся с вами.",
     "formError": "Не удалось отправить заявку. Попробуйте ещё раз.",
-    "formUnavailable": "Форма пока не настроена. Свяжитесь через Telegram.",
+    "formUnavailable": "Приём заявок временно недоступен. Свяжитесь через Telegram.",
+    "formTimeout": "Не удалось дождаться подтверждения. Перед повторной отправкой свяжитесь через Telegram.",
     "dockCases": "Опыт",
     "dockResults": "Результаты",
     "dockContact": "Связь",
@@ -236,7 +238,8 @@ const content = {
     "formSending": "Sending...",
     "formSuccess": "Your request was sent. We'll be in touch soon.",
     "formError": "The request could not be sent. Please try again.",
-    "formUnavailable": "The request form is not configured yet. Please use Telegram.",
+    "formUnavailable": "Requests are temporarily unavailable. Please contact us on Telegram.",
+    "formTimeout": "We could not confirm delivery in time. Please contact us on Telegram before resending.",
     "dockCases": "Experience",
     "dockResults": "Results",
     "dockContact": "Contact",
@@ -291,7 +294,7 @@ function App() {
     localStorage.getItem('madaminbek-theme') === 'light' ? 'light' : 'dark',
   );
   const [phoneValue, setPhoneValue] = useState('+998 ');
-  const [leadStatus, setLeadStatus] = useState<'idle' | 'sending' | 'success' | 'error' | 'unavailable'>('idle');
+  const [leadStatus, setLeadStatus] = useState<'idle' | 'sending' | 'success' | 'error' | 'unavailable' | 'timeout'>('idle');
   const [activeFilm, setActiveFilm] = useState<Film | null>(null);
   const c = content[lang];
   const [firstName, lastName] = names[lang];
@@ -312,26 +315,33 @@ function App() {
     const form = event.currentTarget;
     const data = new FormData(form);
     setLeadStatus('sending');
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 25000);
     try {
       const response = await fetch('/api/lead', {
         method: 'POST',
+        cache: 'no-store',
+        signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName: String(data.get('firstName') ?? ''),
-          lastName: String(data.get('lastName') ?? ''),
+          firstName: String(data.get('firstName') ?? '').trim(),
+          lastName: String(data.get('lastName') ?? '').trim(),
           phone: String(data.get('phone') ?? ''),
           website: String(data.get('website') ?? ''),
         }),
       });
-      if (response.ok) {
+      const result = await response.json();
+      if (response.ok && result?.ok === true) {
         form.reset();
         setPhoneValue('+998 ');
         setLeadStatus('success');
       } else {
         setLeadStatus(response.status === 503 ? 'unavailable' : 'error');
       }
-    } catch {
-      setLeadStatus('error');
+    } catch (error) {
+      setLeadStatus(error instanceof DOMException && error.name === 'AbortError' ? 'timeout' : 'error');
+    } finally {
+      window.clearTimeout(timeout);
     }
   };
 
@@ -612,7 +622,7 @@ function App() {
                     value={phoneValue}
                     onChange={(event) => setPhoneValue(formatUzPhone(event.target.value))}
                     pattern="[+]998 [0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}"
-                    maxLength={17}
+                    maxLength={25}
                     required
                   />
                 </label>
@@ -627,7 +637,7 @@ function App() {
                   <Send size={17} />
                 </button>
                 <p className="lead-form-status" role="status" aria-live="polite">
-                  {leadStatus === 'success' ? c.formSuccess : leadStatus === 'error' ? c.formError : leadStatus === 'unavailable' ? c.formUnavailable : ''}
+                  {leadStatus === 'success' ? c.formSuccess : leadStatus === 'error' ? c.formError : leadStatus === 'unavailable' ? c.formUnavailable : leadStatus === 'timeout' ? c.formTimeout : ''}
                 </p>
               </div>
             </form>
