@@ -168,7 +168,14 @@ export function createLeadHandler({ getConfig = telegramConfig, fetchImpl = fetc
 
     const message = `📩 Новая заявка с портфолио\n\nИмя: ${firstName}\nФамилия: ${lastName}\nТелефон: ${phone}`;
     try {
-      const { response: telegram, result } = await telegramRequest(token, 'sendMessage', { chat_id: chatId, text: message });
+      let { response: telegram, result } = await telegramRequest(token, 'sendMessage', { chat_id: chatId, text: message });
+      const migratedId = result.parameters?.migrate_to_chat_id;
+      // Telegram rejects the old destination before delivery when a group is upgraded.
+      if (!telegram.ok && Number.isSafeInteger(migratedId)) {
+        const migrated = await telegramRequest(token, 'sendMessage', { chat_id: String(migratedId), text: message });
+        telegram = migrated.response;
+        result = migrated.result;
+      }
       const forbidden = result.error_code === 403 || (
         result.error_code === 400 && /not enough rights|chat_write_forbidden|have no rights/iu.test(result.description || '')
       );

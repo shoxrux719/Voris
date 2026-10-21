@@ -140,3 +140,23 @@ test('Telegram write restrictions are reported as an unavailable form', async ()
     });
   }
 });
+
+test('a group migration sends the lead to the new chat exactly once', async () => {
+  const destinations = [];
+  const handler = createLeadHandler({
+    getConfig: () => ({ token: 'test-token', chatId: '-123' }),
+    fetchImpl: async (_url, options) => {
+      destinations.push(JSON.parse(options.body).chat_id);
+      if (destinations.length === 1) {
+        return { ok: false, json: async () => ({ ok: false, error_code: 400, parameters: { migrate_to_chat_id: -1001234567890 } }) };
+      }
+      return { ok: true, json: async () => ({ ok: true }) };
+    },
+  });
+  await withServer(handler, async (url) => {
+    const response = await post(url, { firstName: 'Test', lastName: 'User', phone: '+998 90 123 45 67' });
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { ok: true });
+    assert.deepEqual(destinations, ['-123', '-1001234567890']);
+  });
+});
