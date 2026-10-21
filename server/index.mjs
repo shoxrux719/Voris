@@ -19,6 +19,8 @@ const mime = {
   '.svg': 'image/svg+xml',
   '.webp': 'image/webp',
   '.mp4': 'video/mp4',
+  '.m4s': 'video/mp4',
+  '.m3u8': 'application/vnd.apple.mpegurl',
   '.mov': 'video/quicktime',
   '.webm': 'video/webm',
 };

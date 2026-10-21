@@ -5,7 +5,11 @@
     "fullHdFile": "img_1167-1080-1ec08d3dde47.mp4",
     "fullHdBytes": 13545287,
     "hdFile": "img_1167-720-0e86bbfe4269.mp4",
-    "hdBytes": 6558496
+    "hdBytes": 6558496,
+    "hls": {
+      "720": "/assets/videos/hls/img_1167-d0a9eff7d4a0/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_1167-d0a9eff7d4a0/1080/index.m3u8"
+    }
   },
   {
     "source": "IMG_3846.MOV",
@@ -13,7 +17,11 @@
     "fullHdFile": "img_3846-1080-f07a92de49cf.mp4",
     "fullHdBytes": 9647158,
     "hdFile": "img_3846-720-cd3e11123ce5.mp4",
-    "hdBytes": 4742640
+    "hdBytes": 4742640,
+    "hls": {
+      "720": "/assets/videos/hls/img_3846-f39205d79e75/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_3846-f39205d79e75/1080/index.m3u8"
+    }
   },
   {
     "source": "IMG_4037.MOV",
@@ -21,7 +29,11 @@
     "fullHdFile": "img_4037-1080-aa3e27fecdce.mp4",
     "fullHdBytes": 14889602,
     "hdFile": "img_4037-720-e9dba55bd2cc.mp4",
-    "hdBytes": 7172094
+    "hdBytes": 7172094,
+    "hls": {
+      "720": "/assets/videos/hls/img_4037-4cabafce487a/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_4037-4cabafce487a/1080/index.m3u8"
+    }
   },
   {
     "source": "IMG_4187.MOV",
@@ -29,7 +41,11 @@
     "fullHdFile": "img_4187-1080-3ffa36e52785.mp4",
     "fullHdBytes": 10877511,
     "hdFile": "img_4187-720-cf42bd7c057b.mp4",
-    "hdBytes": 5282215
+    "hdBytes": 5282215,
+    "hls": {
+      "720": "/assets/videos/hls/img_4187-83472238796e/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_4187-83472238796e/1080/index.m3u8"
+    }
   },
   {
     "source": "IMG_4809.MOV",
@@ -37,6 +53,10 @@
     "fullHdFile": "img_4809-1080-3a4074c6c1e3.mp4",
     "fullHdBytes": 9715390,
     "hdFile": "img_4809-720-bfefd45538f5.mp4",
-    "hdBytes": 4682382
+    "hdBytes": 4682382,
+    "hls": {
+      "720": "/assets/videos/hls/img_4809-9897a54ca69e/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_4809-9897a54ca69e/1080/index.m3u8"
+    }
   }
 ]

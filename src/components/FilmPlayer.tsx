@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, LoaderCircle, X } from 'lucide-react';
 import type { Film, FilmLanguage } from '../data/films';
 import { videoAssets } from '../data/video-assets';
+import type Hls from 'hls.js';
 
 const labels = {
   uz: { close: 'Yopish', quality: 'Sifat', loading: 'Video yuklanmoqda…', error: 'Video ochilmadi. Uni alohida ochib ko‘ring.', open: 'Videoni ochish', contact: 'Shunday video kerakmi?', telegram: 'Loyihani muhokama qilish' },
@@ -18,6 +19,7 @@ export function FilmPlayer({ film, lang, onClose }: { film: Film; lang: FilmLang
   const [failed, setFailed] = useState(false);
   const c = labels[lang];
   const source = videoAssets[film.id][quality];
+  const stream = videoAssets[film.id].hls[quality];
 
   useEffect(() => {
     const previousFocus = document.activeElement as HTMLElement | null;
@@ -35,13 +37,45 @@ export function FilmPlayer({ film, lang, onClose }: { film: Film; lang: FilmLang
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    video.src = source;
+    let disposed = false;
+    let player: Hls | undefined;
+    const loadMp4 = () => {
+      if (disposed) return;
+      player?.destroy();
+      player = undefined;
+      setFailed(false);
+      video.src = source;
+      video.load();
+    };
+    const load = async () => {
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = stream;
+        video.load();
+        return;
+      }
+      try {
+        const { default: Hls } = await import('hls.js/light');
+        if (disposed) return;
+        if (!Hls.isSupported()) { loadMp4(); return; }
+        player = new Hls({ maxBufferLength: 8, maxMaxBufferLength: 12, backBufferLength: 4 });
+        player.on(Hls.Events.ERROR, (_event, data) => {
+          if (data.fatal) loadMp4();
+        });
+        player.attachMedia(video);
+        player.loadSource(stream);
+      } catch {
+        loadMp4();
+      }
+    };
+    void load();
     return () => {
+      disposed = true;
+      player?.destroy();
       video.pause();
       video.removeAttribute('src');
       video.load();
     };
-  }, [source]);
+  }, [source, stream]);
 
   return (
     <dialog ref={dialogRef} className="film-dialog" aria-labelledby="film-player-title" onCancel={(event) => { event.preventDefault(); onClose(); }} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>

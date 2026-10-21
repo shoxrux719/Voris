@@ -2,22 +2,42 @@
 export const videoAssets = {
   "img_1167": {
     "720": "/assets/videos/img_1167-720-0e86bbfe4269.mp4",
-    "1080": "/assets/videos/img_1167-1080-1ec08d3dde47.mp4"
+    "1080": "/assets/videos/img_1167-1080-1ec08d3dde47.mp4",
+    "hls": {
+      "720": "/assets/videos/hls/img_1167-d0a9eff7d4a0/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_1167-d0a9eff7d4a0/1080/index.m3u8"
+    }
   },
   "img_3846": {
     "720": "/assets/videos/img_3846-720-cd3e11123ce5.mp4",
-    "1080": "/assets/videos/img_3846-1080-f07a92de49cf.mp4"
+    "1080": "/assets/videos/img_3846-1080-f07a92de49cf.mp4",
+    "hls": {
+      "720": "/assets/videos/hls/img_3846-f39205d79e75/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_3846-f39205d79e75/1080/index.m3u8"
+    }
   },
   "img_4037": {
     "720": "/assets/videos/img_4037-720-e9dba55bd2cc.mp4",
-    "1080": "/assets/videos/img_4037-1080-aa3e27fecdce.mp4"
+    "1080": "/assets/videos/img_4037-1080-aa3e27fecdce.mp4",
+    "hls": {
+      "720": "/assets/videos/hls/img_4037-4cabafce487a/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_4037-4cabafce487a/1080/index.m3u8"
+    }
   },
   "img_4187": {
     "720": "/assets/videos/img_4187-720-cf42bd7c057b.mp4",
-    "1080": "/assets/videos/img_4187-1080-3ffa36e52785.mp4"
+    "1080": "/assets/videos/img_4187-1080-3ffa36e52785.mp4",
+    "hls": {
+      "720": "/assets/videos/hls/img_4187-83472238796e/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_4187-83472238796e/1080/index.m3u8"
+    }
   },
   "img_4809": {
     "720": "/assets/videos/img_4809-720-bfefd45538f5.mp4",
-    "1080": "/assets/videos/img_4809-1080-3a4074c6c1e3.mp4"
+    "1080": "/assets/videos/img_4809-1080-3a4074c6c1e3.mp4",
+    "hls": {
+      "720": "/assets/videos/hls/img_4809-9897a54ca69e/720/index.m3u8",
+      "1080": "/assets/videos/hls/img_4809-9897a54ca69e/1080/index.m3u8"
+    }
   }
 } as const;
