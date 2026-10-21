@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, LoaderCircle, X } from 'lucide-react';
 import type { Film, FilmLanguage } from '../data/films';
+import { videoAssets } from '../data/video-assets';
 
 const labels = {
   uz: { close: 'Yopish', quality: 'Sifat', loading: 'Video yuklanmoqda…', error: 'Video ochilmadi. Uni alohida ochib ko‘ring.', open: 'Videoni ochish', contact: 'Shunday video kerakmi?', telegram: 'Loyihani muhokama qilish' },
@@ -12,26 +13,35 @@ export function FilmPlayer({ film, lang, onClose }: { film: Film; lang: FilmLang
   const dialogRef = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const playback = useRef({ time: 0, playing: true });
-  const [quality, setQuality] = useState<'720' | '1080'>(() => window.matchMedia('(max-width: 767px)').matches ? '720' : '1080');
+  const [quality, setQuality] = useState<'720' | '1080'>('720');
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const c = labels[lang];
-  const source = `/assets/videos/${film.id}-${quality}.mp4`;
+  const source = videoAssets[film.id][quality];
 
   useEffect(() => {
     const previousFocus = document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
     const dialog = dialogRef.current;
-    const video = videoRef.current;
     if (dialog && !dialog.open) dialog.showModal();
     document.body.style.overflow = 'hidden';
     return () => {
-      video?.pause();
       if (dialog?.open) dialog.close();
       document.body.style.overflow = previousOverflow;
       previousFocus?.focus({ preventScroll: true });
     };
   }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.src = source;
+    return () => {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    };
+  }, [source]);
 
   return (
     <dialog ref={dialogRef} className="film-dialog" aria-labelledby="film-player-title" onCancel={(event) => { event.preventDefault(); onClose(); }} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
@@ -40,12 +50,11 @@ export function FilmPlayer({ film, lang, onClose }: { film: Film; lang: FilmLang
         <div className="film-screen">
           <video
             ref={videoRef}
-            src={source}
             poster={`/assets/videos/${film.id}-poster.jpg`}
             controls
             playsInline
             autoPlay
-            preload="metadata"
+            preload="auto"
             aria-label={film.title[lang]}
             onLoadedMetadata={(event) => {
               const video = event.currentTarget;

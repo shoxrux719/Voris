@@ -2,31 +2,41 @@
   {
     "source": "IMG_1167.MOV",
     "sourceBytes": 94061060,
-    "fullHdBytes": 33444241,
-    "hdBytes": 14919574
+    "fullHdFile": "img_1167-1080-1ec08d3dde47.mp4",
+    "fullHdBytes": 13545287,
+    "hdFile": "img_1167-720-0e86bbfe4269.mp4",
+    "hdBytes": 6558496
   },
   {
     "source": "IMG_3846.MOV",
     "sourceBytes": 78152618,
-    "fullHdBytes": 23264494,
-    "hdBytes": 9148075
+    "fullHdFile": "img_3846-1080-f07a92de49cf.mp4",
+    "fullHdBytes": 9647158,
+    "hdFile": "img_3846-720-cd3e11123ce5.mp4",
+    "hdBytes": 4742640
   },
   {
     "source": "IMG_4037.MOV",
     "sourceBytes": 105534608,
-    "fullHdBytes": 36404041,
-    "hdBytes": 15810766
+    "fullHdFile": "img_4037-1080-aa3e27fecdce.mp4",
+    "fullHdBytes": 14889602,
+    "hdFile": "img_4037-720-e9dba55bd2cc.mp4",
+    "hdBytes": 7172094
   },
   {
     "source": "IMG_4187.MOV",
     "sourceBytes": 97073904,
-    "fullHdBytes": 26591769,
-    "hdBytes": 10943704
+    "fullHdFile": "img_4187-1080-3ffa36e52785.mp4",
+    "fullHdBytes": 10877511,
+    "hdFile": "img_4187-720-cf42bd7c057b.mp4",
+    "hdBytes": 5282215
   },
   {
     "source": "IMG_4809.MOV",
     "sourceBytes": 68683142,
-    "fullHdBytes": 23694979,
-    "hdBytes": 10016133
+    "fullHdFile": "img_4809-1080-3a4074c6c1e3.mp4",
+    "fullHdBytes": 9715390,
+    "hdFile": "img_4809-720-bfefd45538f5.mp4",
+    "hdBytes": 4682382
   }
 ]
