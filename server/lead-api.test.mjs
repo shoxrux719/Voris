@@ -21,6 +21,23 @@ function post(url, body) {
   });
 }
 
+test('readiness checks bot and chat access without sending a message', async () => {
+  const methods = [];
+  const handler = createLeadHandler({
+    getConfig: () => ({ token: 'test-token', chatId: '123' }),
+    fetchImpl: async (url) => {
+      methods.push(new URL(url).pathname.split('/').pop());
+      return { ok: true, json: async () => ({ ok: true }) };
+    },
+  });
+  await withServer(handler, async (url) => {
+    const response = await fetch(`${url}/api/lead`);
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { ok: true });
+    assert.deepEqual(methods, ['getMe', 'getChat']);
+  });
+});
+
 test('valid lead is delivered to the configured Telegram chat', async () => {
   let sent;
   const handler = createLeadHandler({

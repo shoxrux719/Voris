@@ -19,8 +19,8 @@ function telegramConfig() {
     if (error.code !== 'ENOENT') throw error;
   }
   return {
-    token: process.env.TELEGRAM_BOT_TOKEN || local.TELEGRAM_BOT_TOKEN,
-    chatId: process.env.TELEGRAM_CHAT_ID || local.TELEGRAM_CHAT_ID,
+    token: (process.env.TELEGRAM_BOT_TOKEN || local.TELEGRAM_BOT_TOKEN)?.trim(),
+    chatId: (process.env.TELEGRAM_CHAT_ID || local.TELEGRAM_CHAT_ID)?.trim(),
   };
 }
 
@@ -79,9 +79,42 @@ function cleanPhone(value) {
 export function createLeadHandler({ getConfig = telegramConfig, fetchImpl = fetchTelegram, now = Date.now } = {}) {
   const attempts = new Map();
 
+  async function telegramRequest(token, method, payload) {
+    const response = await fetchImpl(`https://api.telegram.org/bot${token}/${method}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10000),
+    });
+    return { response, result: await response.json() };
+  }
+
   return async function handleLead(req, res) {
+    if (req.method === 'GET') {
+      const { token, chatId } = getConfig();
+      if (!token || !chatId) {
+        sendJson(res, 503, { ok: false, code: 'not_configured' });
+        return;
+      }
+      try {
+        const bot = await telegramRequest(token, 'getMe', {});
+        if (!bot.response.ok || bot.result.ok !== true) {
+          sendJson(res, 503, { ok: false, code: 'bot_auth_failed' });
+          return;
+        }
+        const chat = await telegramRequest(token, 'getChat', { chat_id: chatId });
+        sendJson(res, chat.response.ok && chat.result.ok === true ? 200 : 503,
+          chat.response.ok && chat.result.ok === true ? { ok: true } : { ok: false, code: 'chat_unavailable' });
+      } catch (error) {
+        // Log only error classification, never the token, URL or submitted details.
+        const reason = error.code || error.name || 'unknown';
+        console.error('lead_health_failed', { reason });
+        sendJson(res, 503, { ok: false, code: 'telegram_unreachable', reason });
+      }
+      return;
+    }
     if (req.method !== 'POST') {
-      res.setHeader('Allow', 'POST');
+      res.setHeader('Allow', 'GET, POST');
       sendJson(res, 405, { ok: false, code: 'method_not_allowed' });
       return;
     }
@@ -135,13 +168,7 @@ export function createLeadHandler({ getConfig = telegramConfig, fetchImpl = fetc
 
     const message = `📩 Новая заявка с портфолио\n\nИмя: ${firstName}\nФамилия: ${lastName}\nТелефон: ${phone}`;
     try {
-      const telegram = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text: message }),
-        signal: AbortSignal.timeout(10000),
-      });
-      const result = await telegram.json();
+      const { response: telegram, result } = await telegramRequest(token, 'sendMessage', { chat_id: chatId, text: message });
       const forbidden = result.error_code === 403 || (
         result.error_code === 400 && /not enough rights|chat_write_forbidden|have no rights/iu.test(result.description || '')
       );
@@ -149,9 +176,13 @@ export function createLeadHandler({ getConfig = telegramConfig, fetchImpl = fetc
         sendJson(res, 503, { ok: false, code: 'delivery_forbidden' });
         return;
       }
-      if (!telegram.ok || result.ok !== true) throw new Error('telegram_rejected');
+      if (!telegram.ok || result.ok !== true) {
+        console.error('lead_telegram_rejected', { status: result.error_code });
+        throw new Error('telegram_rejected');
+      }
       sendJson(res, 200, { ok: true });
-    } catch {
+    } catch (error) {
+      console.error('lead_delivery_failed', { reason: error.code || error.name || 'unknown' });
       sendJson(res, 502, { ok: false, code: 'delivery_failed' });
     }
   };
