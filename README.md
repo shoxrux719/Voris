@@ -1,6 +1,6 @@
-# Madaminbek
+# Voris Turobov
 
-Портфолио Madaminbek Ikramov на React, TypeScript и Vite.
+Портфолио мобилографа и видеографа Voris Turobov на React, TypeScript и Vite.
 
 ## Локальный запуск
 
@@ -22,6 +22,17 @@ npm start
 ```
 
 Порт по умолчанию — `4173`; можно задать переменную `PORT`. На статическом хостинге для `/api/lead` потребуется отдельная серверная функция.
+
+## Подготовка видеоработ
+
+Исходники находятся в `public/assets/VD`. Скрипт создаёт обложки и MP4-версии 1080p/720p с H.264, AAC и fast start в `public/assets/videos`:
+
+```bash
+python -m pip install imageio-ffmpeg
+python scripts/prepare-videos.py
+```
+
+Список и подписи работ задаются в `src/data/films.ts`. Видео загружается только после выбора работы; сервер поддерживает частичные запросы для перемотки.
 
 ## Проверка
 

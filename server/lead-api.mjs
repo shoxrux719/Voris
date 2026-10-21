@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { fetchTelegram } from './telegram-fetch.mjs';
 
 // Telegram requests must always verify the remote certificate.
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1';
@@ -62,7 +63,7 @@ function cleanPhone(value) {
   return phone;
 }
 
-export function createLeadHandler({ getConfig = telegramConfig, fetchImpl = fetch, now = Date.now } = {}) {
+export function createLeadHandler({ getConfig = telegramConfig, fetchImpl = fetchTelegram, now = Date.now } = {}) {
   const attempts = new Map();
 
   return async function handleLead(req, res) {

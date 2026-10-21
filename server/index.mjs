@@ -1,9 +1,9 @@
-import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { handleLead } from './lead-api.mjs';
+import { serveStaticFile } from './static-file.mjs';
 
 const distRoot = path.resolve(fileURLToPath(new URL('../dist/', import.meta.url)));
 const port = Number(process.env.PORT) || 4173;
@@ -18,6 +18,9 @@ const mime = {
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
   '.webp': 'image/webp',
+  '.mp4': 'video/mp4',
+  '.mov': 'video/quicktime',
+  '.webm': 'video/webm',
 };
 
 createServer(async (req, res) => {
@@ -51,8 +54,9 @@ createServer(async (req, res) => {
     res.writeHead(403).end();
     return;
   }
+  let info;
   try {
-    const info = await stat(file);
+    info = await stat(file);
     if (!info.isFile()) throw new Error('not a file');
   } catch {
     if (path.extname(pathname)) {
@@ -61,15 +65,13 @@ createServer(async (req, res) => {
     }
     file = path.join(distRoot, 'index.html');
     try {
-      await stat(file);
+      info = await stat(file);
     } catch {
       res.writeHead(503).end('Run npm run build first.');
       return;
     }
   }
-  res.writeHead(200, { 'Content-Type': mime[path.extname(file).toLowerCase()] || 'application/octet-stream' });
-  if (req.method === 'HEAD') res.end();
-  else createReadStream(file).pipe(res);
+  serveStaticFile(req, res, file, info, mime[path.extname(file).toLowerCase()] || 'application/octet-stream');
 }).listen(port, () => {
   console.log(`Portfolio server ready at http://localhost:${port}`);
 });
