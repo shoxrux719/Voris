@@ -325,6 +325,17 @@ function App() {
   const [firstName, lastName] = names[lang];
   const fullName = `${firstName} ${lastName}`;
   useEffect(() => {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (!target) return;
+    let cancelled = false;
+    // The initial browser jump can happen before React creates the section.
+    void document.fonts.ready.then(() => {
+      if (!cancelled) target.scrollIntoView({ behavior: 'instant', block: 'start' });
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem('madaminbek-theme', theme);
   }, [theme]);
 
