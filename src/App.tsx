@@ -6,6 +6,7 @@ import {
   BarChart3,
   BriefcaseBusiness,
   Camera,
+  Download,
   Mail,
   MapPin,
   Moon,
@@ -32,6 +33,29 @@ const names = {
   ru: ['Ворис', 'Туробов'],
   en: ['Voris', 'Turobov'],
 } as const;
+
+const certificateCopy = {
+  uz: {
+    title: 'Sertifikatlar', headline: 'Har bir kadr ortida — bilim.',
+    description: 'Mobilografiya yo‘nalishi bo‘yicha IT HOUSE sertifikati.',
+    course: 'Mobilografiya', recipient: 'Sertifikat egasi', issuer: 'Ta’lim markazi',
+    view: 'Sertifikatni ochish', download: 'PDF yuklab olish', preview: 'IT HOUSE — Voris Turobov sertifikati',
+  },
+  ru: {
+    title: 'Сертификаты', headline: 'За каждым кадром — знания.',
+    description: 'Сертификат IT HOUSE по направлению «Мобилография».',
+    course: 'Мобилография', recipient: 'Владелец сертификата', issuer: 'Учебный центр',
+    view: 'Открыть сертификат', download: 'Скачать PDF', preview: 'Сертификат IT HOUSE — Voris Turobov',
+  },
+  en: {
+    title: 'Certificates', headline: 'Knowledge behind every frame.',
+    description: 'IT HOUSE certificate in mobile videography.',
+    course: 'Mobile videography', recipient: 'Certificate holder', issuer: 'Education centre',
+    view: 'Open certificate', download: 'Download PDF', preview: 'IT HOUSE certificate — Voris Turobov',
+  },
+} as const;
+
+const certificateFile = '/assets/certificates/it-house-voris-turobov.pdf';
 
 const projectLogos = [
   { name: 'Zerona Clean', file: 'IMG_4981.JPG', width: 1280, height: 1280, crop: 640, left: 320, top: 320 },
@@ -297,6 +321,7 @@ function App() {
   const [leadStatus, setLeadStatus] = useState<'idle' | 'sending' | 'success' | 'error' | 'unavailable' | 'timeout'>('idle');
   const [activeFilm, setActiveFilm] = useState<Film | null>(null);
   const c = content[lang];
+  const certificate = certificateCopy[lang];
   const [firstName, lastName] = names[lang];
   const fullName = `${firstName} ${lastName}`;
   useEffect(() => {
@@ -362,6 +387,7 @@ function App() {
         <nav>
           <a href="#cases">{c.resumeTitle}</a>
           <a href="#results">{c.resultsTitle}</a>
+          <a href="#certificates">{certificate.title}</a>
           <a href="#contact">{c.connectTitle}</a>
         </nav>
         <a href="https://t.me/voris_21" target="_blank" rel="noreferrer">Yangihayot / 2026 ↗</a>
@@ -583,7 +609,33 @@ function App() {
             <p className="story-scope">{c.storyScope}</p>
           </motion.article>
 
-          <motion.article {...revealMotion} data-code="04 / Contact" id="contact" className="portfolio-panel contact-panel rounded-3xl p-6 md:p-8">
+          <motion.article {...revealMotion} data-code="04 / Certificates" id="certificates" aria-labelledby="certificates-title" className="portfolio-panel certificates-panel rounded-3xl p-6 md:p-8">
+            <h3 id="certificates-title" className="section-title"><Award size={17} />{certificate.title}</h3>
+            <div className="certificate-layout">
+              <div className="certificate-copy">
+                <span className="certificate-eyebrow">IT HOUSE / CREATIVE EDUCATION</span>
+                <h4 className="certificate-headline">{certificate.headline}</h4>
+                <p className="body-copy">{certificate.description}</p>
+                <dl className="certificate-details">
+                  <div><dt>{certificate.recipient}</dt><dd>Voris Turobov</dd></div>
+                  <div><dt>{certificate.issuer}</dt><dd>IT HOUSE</dd></div>
+                </dl>
+                <div className="certificate-actions">
+                  <a className="certificate-open" href={certificateFile} target="_blank" rel="noreferrer">{certificate.view}<ArrowUpRight size={17} /></a>
+                  <a className="certificate-download" href={certificateFile} download="IT_HOUSE_Voris_Turobov_Certificate.pdf"><Download size={16} />{certificate.download}</a>
+                </div>
+              </div>
+              <a className="certificate-preview" href={certificateFile} target="_blank" rel="noreferrer" aria-label={certificate.view}>
+                <div className="certificate-preview__label"><span>01 / IT HOUSE</span><ArrowUpRight size={18} /></div>
+                <div className="certificate-paper">
+                  <img src="/assets/certificates/it-house-voris-turobov.webp" alt={certificate.preview} width={1800} height={1273} loading="lazy" decoding="async" />
+                </div>
+                <div className="certificate-preview__footer"><span>{certificate.course}</span><span>PDF · 82 KB</span></div>
+              </a>
+            </div>
+          </motion.article>
+
+          <motion.article {...revealMotion} data-code="05 / Contact" id="contact" className="portfolio-panel contact-panel rounded-3xl p-6 md:p-8">
             <h3 className="section-title">
               <Mail size={17} />
               {c.connectTitle}
@@ -654,6 +706,10 @@ function App() {
         <a href="#results">
           <BarChart3 size={16} />
           <span>{c.dockResults}</span>
+        </a>
+        <a href="#certificates">
+          <Award size={16} />
+          <span>{certificate.title}</span>
         </a>
         <a href="#contact">
           <Mail size={16} />
