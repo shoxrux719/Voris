@@ -328,11 +328,21 @@ function App() {
     const target = document.getElementById(window.location.hash.slice(1));
     if (!target) return;
     let cancelled = false;
+    let frame = 0;
     // The initial browser jump can happen before React creates the section.
-    void document.fonts.ready.then(() => {
-      if (!cancelled) target.scrollIntoView({ behavior: 'instant', block: 'start' });
-    });
-    return () => { cancelled = true; };
+    const restoreAnchor = () => {
+      void document.fonts.ready.then(() => {
+        if (cancelled) return;
+        frame = requestAnimationFrame(() => target.scrollIntoView({ behavior: 'instant', block: 'start' }));
+      });
+    };
+    if (document.readyState === 'complete') restoreAnchor();
+    else window.addEventListener('load', restoreAnchor, { once: true });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      window.removeEventListener('load', restoreAnchor);
+    };
   }, []);
 
   useEffect(() => {
